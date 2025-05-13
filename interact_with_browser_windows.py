@@ -1,13 +1,23 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+import time
 
-# Helps with recording, not required
-opts = webdriver.ChromeOptions()
-opts.add_argument('--disable-gpu')
-browser1 = webdriver.Chrome(chrome_options=opts)
+# Optional: Helps avoid GPU rendering issues on some setups (useful for recording/CI)
+options = webdriver.ChromeOptions()
+options.add_argument('--disable-gpu')
 
-browser1.get('http://techstepacademy.com/training-ground')
+# Setup Chrome driver (you can specify Service(executable_path="path/to/chromedriver") if needed)
+driver = webdriver.Chrome(service=Service(), options=options)
 
-browser1.execute_script('window.open("http://techstepacademy.com/training-ground","_blank");')
-browser1.execute_script('window.open("http://techstepacademy.com/training-ground","_blank");')
-browser1.execute_script('window.open("http://techstepacademy.com/training-ground","_blank");')
-browser1.execute_script('window.open("http://techstepacademy.com/training-ground","_blank");')
+# Open main tab
+driver.get('http://techstepacademy.com/training-ground')
+
+# Open additional tabs with the same URL
+for _ in range(4):
+    driver.execute_script('window.open("http://techstepacademy.com/training-ground", "_blank");')
+
+# Optional: Let the browser stay open for a few seconds so you can see it
+time.sleep(5)
+
+# Clean up
+driver.quit()
